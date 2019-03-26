@@ -14,7 +14,7 @@ async def create_pool(loop, **kw):
         port=kw.get('port', 3306),
         user=kw['user'],
         password=kw['password'],
-        db=kw['db'],
+        db=kw['database'],
         charset=kw.get('charset', 'utf8'),
         autocommit=kw.get('autocommit', True),
         maxsize=kw.get('maxsize', 10),
@@ -158,6 +158,7 @@ class Model(dict, metaclass=ModelMetaclass):
                 setattr(self, key, value)
         return value
 
+    # 往Model类添加class方法，就可以让所有子类调用class方法：
     @classmethod
     async def findAll(cls, where=None, args=None, **kw):
         ' find objects by where clause. '
@@ -205,6 +206,8 @@ class Model(dict, metaclass=ModelMetaclass):
             return None
         return cls(**rs[0])
 
+
+    # 往Model类添加实例方法，就可以让所有子类调用实例方法：
     async def save(self):
         args = list(map(self.getValueOrDefault, self.__fields__))
         args.append(self.getValueOrDefault(self.__primary_key__))
